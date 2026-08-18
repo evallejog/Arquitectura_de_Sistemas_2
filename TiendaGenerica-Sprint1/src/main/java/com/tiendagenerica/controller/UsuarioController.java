@@ -1,0 +1,11 @@
+package com.tiendagenerica.controller;
+import com.tiendagenerica.model.Usuario; import com.tiendagenerica.service.UsuarioService; import org.springframework.stereotype.Controller; import org.springframework.web.bind.annotation.*; import org.springframework.web.servlet.mvc.support.RedirectAttributes; import javax.validation.Valid; import org.springframework.validation.BindingResult; import java.util.*;
+@Controller @RequestMapping("/usuarios") public class UsuarioController {
+private final UsuarioService s; public UsuarioController(UsuarioService x){s=x;}
+private boolean activo(javax.servlet.http.HttpSession h){return h.getAttribute("usuarioActivo")!=null;}
+@GetMapping public String pagina(@RequestParam(required=false) String cedula,org.springframework.ui.Model m,javax.servlet.http.HttpSession h){if(!activo(h))return "redirect:/login";m.addAttribute("usuario",cedula==null?new Usuario():s.buscar(cedula).orElse(new Usuario()));return "usuarios";}
+@PostMapping("/crear") public String crear(@Valid @ModelAttribute Usuario u,BindingResult b,RedirectAttributes r){if(b.hasErrors()){r.addFlashAttribute("error","Faltan datos del usuario");return "redirect:/usuarios";}try{s.crear(u);r.addFlashAttribute("ok","Usuario Creado");}catch(Exception e){r.addFlashAttribute("error",e.getMessage());}return "redirect:/usuarios";}
+@GetMapping("/consultar") public String consultar(@RequestParam String cedula,RedirectAttributes r){if(s.buscar(cedula).isEmpty()){r.addFlashAttribute("error","Usuario Inexistente");return "redirect:/usuarios";}return "redirect:/usuarios?cedula="+cedula;}
+@PostMapping("/actualizar") public String actualizar(@Valid @ModelAttribute Usuario u,BindingResult b,RedirectAttributes r){if(b.hasErrors()){r.addFlashAttribute("error","Datos faltantes");return "redirect:/usuarios";}try{s.actualizar(u);r.addFlashAttribute("ok","Datos del Usuario Actualizados");}catch(Exception e){r.addFlashAttribute("error",e.getMessage());}return "redirect:/usuarios";}
+@PostMapping("/borrar") public String borrar(@RequestParam String cedula,RedirectAttributes r){try{s.borrar(cedula);r.addFlashAttribute("ok","Datos del Usuario Borrados");}catch(Exception e){r.addFlashAttribute("error",e.getMessage());}return "redirect:/usuarios";}
+}

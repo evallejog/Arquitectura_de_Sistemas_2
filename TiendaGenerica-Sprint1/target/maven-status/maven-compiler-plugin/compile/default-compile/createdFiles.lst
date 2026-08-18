@@ -1,0 +1,7 @@
+com\tiendagenerica\TiendaGenericaApplication.class
+com\tiendagenerica\service\UsuarioService.class
+com\tiendagenerica\config\DataInitializer.class
+com\tiendagenerica\repository\UsuarioRepository.class
+com\tiendagenerica\model\Usuario.class
+com\tiendagenerica\controller\UsuarioController.class
+com\tiendagenerica\controller\AuthController.class
